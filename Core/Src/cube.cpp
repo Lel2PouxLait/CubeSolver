@@ -44,7 +44,7 @@ RubiksCube::RubiksCube() {
 		for (int j=0;j<9;j++){
 			
 			cube_data[i][j] = i; 
-                        temp_cube_data[i][j] = i;
+            temp_cube_data[i][j] = i;
 		}
 	}
 }
@@ -60,16 +60,40 @@ RubiksCube::~RubiksCube() {
 	free(temp_cube_data);
 }
 
+void RubiksCube::RotCubePinceDroiteAntiHoraire(){
+	RotateEquatorZ();
+	MoveU();
+	MoveDprime();
+}
+
+void RubiksCube::RotCubePinceDroiteHoraire(){
+	RotCubePinceDroiteAntiHoraire();
+	RotCubePinceDroiteAntiHoraire();
+	RotCubePinceDroiteAntiHoraire();
+}
+
+void RubiksCube::RotCubePinceGaucheAntiHoraire(){
+	RotateEquatorY();
+	MoveF();
+	MoveBprime();
+}
+
+void RubiksCube::RotCubePinceGaucheHoraire(){
+	RotCubePinceGaucheAntiHoraire();
+	RotCubePinceGaucheAntiHoraire();
+	RotCubePinceGaucheAntiHoraire();
+}
+
 void RubiksCube::affichage() const{
 	
 	for(int i=0;i<6;i++){
-		cout<<"face "<<i<<": "<<endl<<"[";		
+		//cout<<"face "<<i<<": "<<endl<<"[";
 		for(int j=0;j<9;j++){
-			cout<<cube_data[i][j]<<"  ";
+			//cout<<cube_data[i][j]<<"  ";
 		}
-		cout<<"]"<<endl<<endl;
+		//cout<<"]"<<endl<<endl;
 	}
-        cout << endl << "----------------------------"<<endl<<endl;
+        //cout << endl << "----------------------------"<<endl<<endl;
 	
 }
 

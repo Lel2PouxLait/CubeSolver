@@ -2,9 +2,8 @@
 
 #include<stdio.h>
 #include<stdlib.h>
-#include<math.h>
-#include<time.h>
-#include<iostream>
+//#include<math.h>
+//#include<time.h>
 
 #define WHITE 0
 #define RED 1
@@ -20,7 +19,7 @@
 #define R 4
 #define D 5
 
-using namespace std;
+//using namespace std;
 
 
 class RubiksCube
@@ -41,9 +40,13 @@ class RubiksCube
                 /// bring face to top
                 void BringToTop(int face);
 
-		/// bring top to Top and face to Face
-		void BringToTop_Front(int top,int front);
+                /// bring top to Top and face to Face
+                void BringToTop_Front(int top,int front);
 
+                void RotCubePinceDroiteAntiHoraire();
+                void RotCubePinceDroiteHoraire();
+                void RotCubePinceGaucheAntiHoraire();
+                void RotCubePinceGaucheHoraire();
 
                 void MoveR();
                 void MoveR2();

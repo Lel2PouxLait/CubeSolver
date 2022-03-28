@@ -23,6 +23,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <iostream>
+using namespace std;
+#include "cube.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,9 +45,11 @@
 #define LEFT_CLAW_OPEN   1800
 #define LEFT_CLAW_CLOSE  1000
 #define LEFT_CLAW_FREE   1250
+#define LEFT_CLAW_BIGFREE   1450
 #define RIGHT_CLAW_OPEN  1900
 #define RIGHT_CLAW_CLOSE 1100
 #define RIGHT_CLAW_FREE  1300
+#define RIGHT_CLAW_BIGFREE 1500
 
 //Definition des rapports cycliques (en us) pour chaque position de chaque bras.
 #define LEFT_ARM_0    530
@@ -55,7 +60,7 @@
 #define RIGHT_ARM_180 2435
 
 //Definition du delai entre chaque mouvement
-#define DELAY 1000
+#define DELAY 500
 
 void LeftCWBody();
 void LeftAWBody();
@@ -98,8 +103,8 @@ void TuneRightClaw();
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim3;
-
 UART_HandleTypeDef huart2;
+
 
 /* USER CODE BEGIN PV */
 
@@ -118,9 +123,7 @@ static void MX_TIM3_Init(void);
 /* USER CODE BEGIN 0 */
 uint8_t rx_buf[128];
 
-void __io_putchar(uint8_t ch) {
-	HAL_UART_Transmit(&huart2, &ch, 1, 1);
-}
+
 
 unsigned char solve()
 {
@@ -325,17 +328,30 @@ void setPWM(TIM_HandleTypeDef timer, uint32_t channel, uint16_t period, uint16_t
 
 void initServosPosition(){
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_OPEN);
+	  HAL_Delay(DELAY);
 	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_OPEN);
 	  HAL_Delay(DELAY);
 	  setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_90);
+	  HAL_Delay(DELAY);
 	  setPWM(htim3, RIGHT_ARM, 20000, RIGHT_ARM_90);
 	  HAL_Delay(DELAY);
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_FREE);
+	  HAL_Delay(DELAY);
 	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_FREE);
 	  HAL_Delay(5000);
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_CLOSE);
+	  HAL_Delay(DELAY);
   	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_CLOSE);
 	  HAL_Delay(DELAY);
+}
+
+void replace(){
+	setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_BIGFREE);
+	setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_BIGFREE);
+	HAL_Delay(DELAY);
+	setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_CLOSE);
+	setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_CLOSE);
+	HAL_Delay(DELAY);
 }
 
 void LeftCWBody()
@@ -453,133 +469,193 @@ void RightAWSide()
 void ActR2()
 {
 	RightCWBody();
+	replace();
 	LeftAWSide();
+	replace();
 	LeftAWSide();
+	replace();
 	RightAWBody();
+	replace();
 }
 
 void ActRp()
 {
 	RightCWBody();
+	replace();
 	LeftAWSide();
+	replace();
 	RightAWBody();
+	replace();
 }
 
 void ActR()
 {
 	RightCWBody();
+	replace();
 	LeftCWSide();
+	replace();
 	RightAWBody();
+	replace();
 }
 
 void ActL2()
 {
 	RightAWBody();
+	replace();
 	LeftAWSide();
+	replace();
 	LeftAWSide();
+	replace();
 	RightCWBody();
+	replace();
 }
 
 void ActLp()
 {
 	RightAWBody();
+	replace();
 	LeftAWSide();
+	replace();
 	RightCWBody();
+	replace();
 }
 
 void ActL()
 {
 	RightAWBody();
+	replace();
 	LeftCWSide();
+	replace();
 	RightCWBody();
+	replace();
 }
 
 void ActU2()
 {
 	LeftCWBody();
+	replace();
 	LeftCWBody();
+	replace();
 	RightCWSide();
+	replace();
 	RightCWSide();
+	replace();
 	LeftCWBody();
+	replace();
 	LeftCWBody();
+	replace();
 }
 
 void ActUp()
 {
 	LeftCWBody();
+	replace();
 	LeftCWBody();
+	replace();
 	RightAWSide();
+	replace();
 	LeftCWBody();
+	replace();
 	LeftCWBody();
+	replace();
 }
 
 void ActU()
 {
 	LeftCWBody();
+	replace();
 	LeftCWBody();
+	replace();
 	RightCWSide();
+	replace();
 	LeftCWBody();
+	replace();
 	LeftCWBody();
+	replace();
 }
 
 void ActD2()
 {
 	RightCWSide();
+	replace();
 	RightCWSide();
+	replace();
 }
 
 void ActDp()
 {
 	RightAWSide();
+	replace();
 }
 
 void ActD()
 {
 	RightCWSide();
+	replace();
 }
 
 void ActF2()
 {
 	RightCWBody();
+	replace();
 	RightCWBody();
+	replace();
 	LeftCWSide();
+	replace();
 	LeftCWSide();
+	replace();
 	RightCWBody();
+	replace();
 	RightCWBody();
+	replace();
 }
 
 void ActFp()
 {
 	RightCWBody();
+	replace();
 	RightCWBody();
+	replace();
 	LeftAWSide();
+	replace();
 	RightCWBody();
+	replace();
 	RightCWBody();
+	replace();
 }
 
 void ActF()
 {
 	RightCWBody();
+	replace();
 	RightCWBody();
+	replace();
 	LeftCWSide();
+	replace();
 	RightCWBody();
+	replace();
 	RightCWBody();
+	replace();
 }
 
 void ActB2()
 {
 	LeftCWSide();
+	replace();
 	LeftCWSide();
+	replace();
 }
 
 void ActBp()
 {
 	LeftAWSide();
+	replace();
 }
 
 void ActB()
 {
 	LeftCWSide();
+	replace();
 }
 
 /* USER CODE END 0 */
@@ -617,10 +693,12 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Init(&htim3);
   printf("Power ON\r\n");
+
   for(int i=0; i<128; i++)
   {
   		  rx_buf[i] = 0;
   }
+  RubiksCube myCube;
   initServosPosition();
   /* USER CODE END 2 */
 
@@ -632,6 +710,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
 	  int sol = solve();
 	  if(sol==0)
 	  {

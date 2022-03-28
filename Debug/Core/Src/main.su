@@ -1,36 +1,40 @@
-main.c:121:6:__io_putchar	16	static
-main.c:125:15:solve	16	static
-main.c:311:6:setPWM	40	static
-main.c:326:6:initServosPosition	96	static
-main.c:341:6:LeftCWBody	96	static
-main.c:357:6:LeftAWBody	96	static
-main.c:373:6:LeftCWSide	96	static
-main.c:385:6:LeftAWSide	96	static
-main.c:397:6:RightCWBody	96	static
-main.c:413:6:RightAWBody	96	static
-main.c:429:6:RightCWSide	96	static
-main.c:441:6:RightAWSide	96	static
-main.c:453:6:ActR2	8	static
-main.c:461:6:ActRp	8	static
-main.c:468:6:ActR	8	static
-main.c:475:6:ActL2	8	static
-main.c:483:6:ActLp	8	static
-main.c:490:6:ActL	8	static
-main.c:497:6:ActU2	8	static
-main.c:507:6:ActUp	8	static
-main.c:516:6:ActU	8	static
-main.c:525:6:ActD2	8	static
-main.c:531:6:ActDp	8	static
-main.c:536:6:ActD	8	static
-main.c:541:6:ActF2	8	static
-main.c:551:6:ActFp	8	static
-main.c:560:6:ActF	8	static
-main.c:569:6:ActB2	8	static
-main.c:575:6:ActBp	8	static
-main.c:580:6:ActB	8	static
-main.c:591:5:main	24	static
-main.c:659:6:SystemClock_Config	88	static
-main.c:699:13:MX_TIM3_Init	48	static
-main.c:760:13:MX_USART2_UART_Init	8	static
-main.c:793:13:MX_GPIO_Init	48	static
-main.c:823:6:Error_Handler	4	static,ignoring_inline_asm
+gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
+main.cpp:128:15:unsigned char solve()	16	static
+main.cpp:314:6:void setPWM(TIM_HandleTypeDef, uint32_t, uint16_t, uint16_t)	40	static
+main.cpp:329:6:void initServosPosition()	96	static
+main.cpp:348:6:void replace()	96	static
+main.cpp:357:6:void LeftCWBody()	96	static
+main.cpp:373:6:void LeftAWBody()	96	static
+main.cpp:389:6:void LeftCWSide()	96	static
+main.cpp:401:6:void LeftAWSide()	96	static
+main.cpp:413:6:void RightCWBody()	96	static
+main.cpp:429:6:void RightAWBody()	96	static
+main.cpp:445:6:void RightCWSide()	96	static
+main.cpp:457:6:void RightAWSide()	96	static
+main.cpp:469:6:void ActR2()	8	static
+main.cpp:481:6:void ActRp()	8	static
+main.cpp:491:6:void ActR()	8	static
+main.cpp:501:6:void ActL2()	8	static
+main.cpp:513:6:void ActLp()	8	static
+main.cpp:523:6:void ActL()	8	static
+main.cpp:533:6:void ActU2()	8	static
+main.cpp:549:6:void ActUp()	8	static
+main.cpp:563:6:void ActU()	8	static
+main.cpp:577:6:void ActD2()	8	static
+main.cpp:585:6:void ActDp()	8	static
+main.cpp:591:6:void ActD()	8	static
+main.cpp:597:6:void ActF2()	8	static
+main.cpp:613:6:void ActFp()	8	static
+main.cpp:627:6:void ActF()	8	static
+main.cpp:641:6:void ActB2()	8	static
+main.cpp:649:6:void ActBp()	8	static
+main.cpp:655:6:void ActB()	8	static
+main.cpp:667:5:int main()	40	static
+main.cpp:738:6:void SystemClock_Config()	88	static
+main.cpp:778:13:void MX_TIM3_Init()	48	static
+main.cpp:839:13:void MX_USART2_UART_Init()	8	static
+main.cpp:872:13:void MX_GPIO_Init()	48	static
+main.cpp:902:6:void Error_Handler()	4	static,ignoring_inline_asm
+main.cpp:911:1:void __static_initialization_and_destruction_0(int, int)	16	static
+main.cpp:911:1:cpp)	8	static
+main.cpp:911:1:cpp)	8	static
