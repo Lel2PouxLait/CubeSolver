@@ -42,13 +42,13 @@ using namespace std;
 #define RIGHT_CLAW TIM_CHANNEL_4	//D8 sur carte fille - D7 MORPHEO droite
 
 //Definition des rapports cycliques (en us) pour chaque position de chaque pince.
-#define LEFT_CLAW_OPEN   1800
+#define LEFT_CLAW_OPEN   1900
 #define LEFT_CLAW_CLOSE  1000
-#define LEFT_CLAW_FREE   1250
+#define LEFT_CLAW_FREE   1300
 #define LEFT_CLAW_BIGFREE   1450
-#define RIGHT_CLAW_OPEN  1900
+#define RIGHT_CLAW_OPEN  2000
 #define RIGHT_CLAW_CLOSE 1100
-#define RIGHT_CLAW_FREE  1300
+#define RIGHT_CLAW_FREE  1350
 #define RIGHT_CLAW_BIGFREE 1500
 
 //Definition des rapports cycliques (en us) pour chaque position de chaque bras.
@@ -104,6 +104,7 @@ void TuneRightClaw();
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
+RubiksCube cube;
 
 
 /* USER CODE BEGIN PV */
@@ -121,10 +122,20 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t rx_buf[128];
+uint8_t rx_buf[128];		//Buffer pour l'envoi de la séquence de coups depuis l'ordinateur via l'UART
 
 
-
+/****************************************************************************/
+/*								FONCTION SOLVE()							*/
+/*	Parametres: 	Aucun													*/
+/*																			*/
+/*	Return: 		Code d'état de la résolution (0=Résolution terminée; 	*/
+/*					1=En attente de la séquence; -1=erreur)					*/
+/*																			*/
+/*	Effet:			Fonction principale de résolution du cube, permet		*/
+/*					d'appeller les bonnes fonctions en fonction de la		*/
+/* 					sequence demandée										*/
+/****************************************************************************/
 unsigned char solve()
 {
 	  int i=0;
@@ -311,6 +322,18 @@ unsigned char solve()
 	  return 0;
 }
 
+
+/****************************************************************************/
+/*								FONCTION setPWM()							*/
+/*	Parametres: 	-timer; indique le timer de la STM32 à utiliser			*/
+/*					-channel; indique le channel du timer à utiliser pour	*/
+/*							  generer la PWM								*/
+/*					-period; indique la periode en ms de la PWM				*/
+/*					-pulse; indique la duree de l'etat en ms haut de la PWM	*/
+/*																			*/
+/*	Return: 		Aucun													*/
+/*																			*/
+/****************************************************************************/
 void setPWM(TIM_HandleTypeDef timer, uint32_t channel, uint16_t period, uint16_t pulse)
 {
 	HAL_TIM_PWM_Stop(&timer, channel);
@@ -326,6 +349,17 @@ void setPWM(TIM_HandleTypeDef timer, uint32_t channel, uint16_t period, uint16_t
 	HAL_TIM_PWM_Start(&timer, channel);
 }
 
+
+/****************************************************************************/
+/*							FONCTION initServosPosition()					*/
+/*	Parametres: 	Aucun													*/
+/*																			*/
+/*	Return: 		Aucun													*/
+/*																			*/
+/*	Effet:			-Initialise la position des pinces et des bras 			*/
+/*					-Permet un reset sans risques pour le robot				*/
+/*					-Permet de positionner le cube dans les pinces avant res*/
+/****************************************************************************/
 void initServosPosition(){
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_OPEN);
 	  HAL_Delay(DELAY);
@@ -345,6 +379,16 @@ void initServosPosition(){
 	  HAL_Delay(DELAY);
 }
 
+
+/****************************************************************************/
+/*								FONCTION replace()							*/
+/*	Parametres: 	Aucun													*/
+/*																			*/
+/*	Return: 		Aucun													*/
+/*																			*/
+/*	Effet:			Fonction qui permet au cube de se replacer dans une 	*/
+/*					bonne position et donc d'éviter sa chute				*/
+/****************************************************************************/
 void replace(){
 	setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_BIGFREE);
 	setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_BIGFREE);
@@ -476,6 +520,7 @@ void ActR2()
 	replace();
 	RightAWBody();
 	replace();
+	cube.MoveR2();
 }
 
 void ActRp()
@@ -486,6 +531,7 @@ void ActRp()
 	replace();
 	RightAWBody();
 	replace();
+	cube.MoveRprime();
 }
 
 void ActR()
@@ -496,6 +542,7 @@ void ActR()
 	replace();
 	RightAWBody();
 	replace();
+	cube.MoveR();
 }
 
 void ActL2()
@@ -508,6 +555,7 @@ void ActL2()
 	replace();
 	RightCWBody();
 	replace();
+	cube.MoveL2();
 }
 
 void ActLp()
@@ -518,6 +566,7 @@ void ActLp()
 	replace();
 	RightCWBody();
 	replace();
+	cube.MoveLprime();
 }
 
 void ActL()
@@ -528,6 +577,7 @@ void ActL()
 	replace();
 	RightCWBody();
 	replace();
+	cube.MoveL();
 }
 
 void ActU2()
@@ -544,6 +594,7 @@ void ActU2()
 	replace();
 	LeftCWBody();
 	replace();
+	cube.MoveU2();
 }
 
 void ActUp()
@@ -558,6 +609,7 @@ void ActUp()
 	replace();
 	LeftCWBody();
 	replace();
+	cube.MoveUprime();
 }
 
 void ActU()
@@ -572,6 +624,7 @@ void ActU()
 	replace();
 	LeftCWBody();
 	replace();
+	cube.MoveU();
 }
 
 void ActD2()
@@ -580,18 +633,21 @@ void ActD2()
 	replace();
 	RightCWSide();
 	replace();
+	cube.MoveD2();
 }
 
 void ActDp()
 {
 	RightAWSide();
 	replace();
+	cube.MoveDprime();
 }
 
 void ActD()
 {
 	RightCWSide();
 	replace();
+	cube.MoveD();
 }
 
 void ActF2()
@@ -608,6 +664,7 @@ void ActF2()
 	replace();
 	RightCWBody();
 	replace();
+	cube.MoveF2();
 }
 
 void ActFp()
@@ -622,6 +679,7 @@ void ActFp()
 	replace();
 	RightCWBody();
 	replace();
+	cube.MoveFprime();
 }
 
 void ActF()
@@ -636,6 +694,7 @@ void ActF()
 	replace();
 	RightCWBody();
 	replace();
+	cube.MoveF();
 }
 
 void ActB2()
@@ -644,18 +703,21 @@ void ActB2()
 	replace();
 	LeftCWSide();
 	replace();
+	cube.MoveB2();
 }
 
 void ActBp()
 {
 	LeftAWSide();
 	replace();
+	cube.MoveBprime();
 }
 
 void ActB()
 {
 	LeftCWSide();
 	replace();
+	cube.MoveB();
 }
 
 /* USER CODE END 0 */
@@ -691,6 +753,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  cube.affichage();
+
   HAL_TIM_PWM_Init(&htim3);
   printf("Power ON\r\n");
 
@@ -698,7 +762,6 @@ int main(void)
   {
   		  rx_buf[i] = 0;
   }
-  RubiksCube myCube;
   initServosPosition();
   /* USER CODE END 2 */
 
@@ -710,22 +773,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
 	  int sol = solve();
 	  if(sol==0)
 	  {
 		  printf("Fini \n\r");
+		  cube.affichage();
 		  break;
 	  }
 
-	/*setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_0);
-	HAL_Delay(DELAY);
-	setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_90);
-	HAL_Delay(DELAY);
-	setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_180);
-	HAL_Delay(DELAY);
-	setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_90);
-	HAL_Delay(DELAY);*/
   }
   return 0;
   /* USER CODE END 3 */

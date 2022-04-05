@@ -42,7 +42,6 @@ RubiksCube::RubiksCube() {
 
 	for (int i =0; i < 6; i++){
 		for (int j=0;j<9;j++){
-			
 			cube_data[i][j] = i; 
             temp_cube_data[i][j] = i;
 		}
@@ -87,10 +86,13 @@ void RubiksCube::RotCubePinceGaucheHoraire(){
 void RubiksCube::affichage() const{
 	
 	for(int i=0;i<6;i++){
+		printf("face %d: [",i);
 		//cout<<"face "<<i<<": "<<endl<<"[";
 		for(int j=0;j<9;j++){
+			printf("%d ",cube_data[i][j]);
 			//cout<<cube_data[i][j]<<"  ";
 		}
+		printf("]\n\r \n\r");
 		//cout<<"]"<<endl<<endl;
 	}
         //cout << endl << "----------------------------"<<endl<<endl;
