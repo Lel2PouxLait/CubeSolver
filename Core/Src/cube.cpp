@@ -42,8 +42,39 @@ RubiksCube::RubiksCube() {
 
 	for (int i =0; i < 6; i++){
 		for (int j=0;j<9;j++){
+			switch (i)
+			      {
+			         case 0:
+			 			cube_data[i][j] = UInitialColor;
+			            temp_cube_data[i][j] = UInitialColor;
+			            break;
+			         case 1:
+						cube_data[i][j] = FInitialColor;
+						temp_cube_data[i][j] = FInitialColor;
+						break;
+			         case 2:
+						cube_data[i][j] = LInitialColor;
+						temp_cube_data[i][j] = LInitialColor;
+						break;
+			         case 3:
+						cube_data[i][j] = BInitialColor;
+						temp_cube_data[i][j] = BInitialColor;
+						break;
+			         case 4:
+						cube_data[i][j] = RInitialColor;
+						temp_cube_data[i][j] = RInitialColor;
+						break;
+			         case 5:
+						cube_data[i][j] = DInitialColor;
+						temp_cube_data[i][j] = DInitialColor;
+						break;
+			         default:
+			            break;
+			      }
+			/*
 			cube_data[i][j] = i; 
             temp_cube_data[i][j] = i;
+            */
 		}
 	}
 }
@@ -100,7 +131,6 @@ void RubiksCube::affichage() const{
 }
 
 void RubiksCube::CopyCube(){
-
     for (int i = 0; i < 6; i++){
         for (int j = 0; j < 9; j++){
             cube_data[i][j] = temp_cube_data[i][j];
@@ -219,6 +249,30 @@ void RubiksCube::BringToTop(int face){
         default:
             break;
     }
+}
+
+int RubiksCube::WhereIsColor(int initialColorFace){
+	for(int i=0; i<6; i++){
+		if(cube_data[i][4]==initialColorFace){
+			switch(i){
+				case 0:
+					return 'U';
+				case 1:
+					return 'F';
+				case 2:
+					return 'L';
+				case 3:
+					return 'B';
+				case 4:
+					return 'R';
+				case 5:
+					return 'D';
+				default:
+					return -1;
+			}
+		}
+	}
+	return -1;
 }
 
 void RubiksCube::RotateEquatorY(){

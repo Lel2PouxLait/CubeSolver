@@ -19,7 +19,12 @@
 #define R 4
 #define D 5
 
-//using namespace std;
+#define UInitialColor 5
+#define FInitialColor 1
+#define LInitialColor 2
+#define BInitialColor 3
+#define RInitialColor 4
+#define DInitialColor 0
 
 
 class RubiksCube
@@ -72,6 +77,7 @@ class RubiksCube
                 void MoveB2();
                 void MoveBprime();
 
+                int WhereIsColor(int initialColorFace);
 
         protected:
 

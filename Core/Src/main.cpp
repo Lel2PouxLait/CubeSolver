@@ -71,6 +71,11 @@ void RightAWBody();
 void RightCWSide();
 void RightAWSide();
 
+
+void Act(int face, int type);
+int WhichColorWasHere(int face);
+int WhereIsColor(int initialColorFace);
+
 void ActR2();
 void ActRp();
 void ActR();
@@ -104,7 +109,22 @@ void TuneRightClaw();
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
+
 RubiksCube cube;
+
+int initialWhiteFace = 'U';	/*Signifie que la face initiale du blanc est la face 0, soit la face Up*/
+int initialRedFace = 'F';		/*[...] rouge [...] 1, soit la face Front*/
+int initialBlueFace = 'R';	/*[...] bleue [...] 4, soit la face Right*/
+int initialGreenFace = 'L';	/*[...] green [...] 2, soit la face Left*/
+int initialOrangeFace = 'B';	/*[...] orange [...] 3, soit la face Back*/
+int initialYellowFace = 'D';	/*[...] jaune [...] 5, soit la face Down*/
+
+int initialUpColor = 0;	/*Signifie que la face initiale du blanc est la face 0, soit la face Up*/
+int initialFrontColor = 1;		/*[...] rouge [...] 1, soit la face Front*/
+int initialRightColor = 4;	/*[...] bleue [...] 4, soit la face Right*/
+int initialLeftColor = 2;	/*[...] green [...] 2, soit la face Left*/
+int initialBackColor = 3;	/*[...] orange [...] 3, soit la face Back*/
+int initialDownColor = 5;	/*[...] jaune [...] 5, soit la face Down*/
 
 
 /* USER CODE BEGIN PV */
@@ -139,6 +159,8 @@ uint8_t rx_buf[128];		//Buffer pour l'envoi de la séquence de coups depuis l'or
 unsigned char solve()
 {
 	  int i=0;
+	  int initialColorFace,nowColorFace;
+
 	  HAL_UART_Receive(&huart2,rx_buf,128,100);
 	  if(rx_buf[0]=='G' && rx_buf[1]=='O' && rx_buf[2]==':')
 	  {
@@ -148,23 +170,33 @@ unsigned char solve()
 		  {
 			  if(rx_buf[i]=='R')
 			  {
-				  //printf("R\n\r");
+				  initialColorFace = WhichColorWasHere('R');
+				  if(initialColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+				  nowColorFace = cube.WhereIsColor(initialColorFace);
+				  if(nowColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+
 				  if (rx_buf[i+1] == '2')		//cas R2
 				  {
+					  Act(nowColorFace, '2');
 					  printf("R2\r\n");
-					  ActR2();
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
 					  printf("R'\r\n");
-					  ActRp();
+					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
 					  printf("R\r\n");
-					  ActR();
+					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
@@ -175,23 +207,33 @@ unsigned char solve()
 			  }
 			  else if(rx_buf[i]=='L')
 			  {
-				  //printf("L\n\r");
+				  initialColorFace = WhichColorWasHere('L');
+				  if(initialColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+				  nowColorFace = cube.WhereIsColor(initialColorFace);
+				  if(nowColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+
 				  if (rx_buf[i+1] == '2')
 				  {
+					  Act(nowColorFace, '2');
 					  printf("L2\r\n");
-					  ActL2();
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
+					  Act(nowColorFace, 39);
 					  printf("L'\r\n");
-					  ActLp();
 					  i+=3;
 				  }
 					  else if (rx_buf[i+1] == 32)
 				  {
+					  Act(nowColorFace, 32);
 					  printf("L\r\n");
-					  ActL();
 					  i+=2;
 				  }
 				  else
@@ -202,23 +244,33 @@ unsigned char solve()
 			  }
 			  else if(rx_buf[i]=='U')
 			  {
-				  //printf("U\n\r");
+				  initialColorFace = WhichColorWasHere('U');
+				  if(initialColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+				  nowColorFace = cube.WhereIsColor(initialColorFace);
+				  if(nowColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+
 				  if (rx_buf[i+1] == '2')
 				  {
 					  printf("U2\r\n");
-					  ActU2();
+					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 					  else if (rx_buf[i+1] == 39)
 				  {
 					  printf("U'\r\n");
-					  ActUp();
+					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
 					  printf("U\r\n");
-					  ActU();
+					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
@@ -229,23 +281,33 @@ unsigned char solve()
 			  }
 			  else if(rx_buf[i]=='D')
 			  {
-				  //printf("D\n\r");
+				  initialColorFace = WhichColorWasHere('D');
+				  if(initialColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+				  nowColorFace = cube.WhereIsColor(initialColorFace);
+				  if(nowColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+
 				  if (rx_buf[i+1] == '2')
 				  {
 					  printf("D2\r\n");
-					  ActD2();
+					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
 					  printf("D'\r\n");
-					  ActDp();
+					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
 					  printf("D\r\n");
-					  ActD();
+					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
@@ -256,23 +318,33 @@ unsigned char solve()
 			  }
 			  else if(rx_buf[i]=='F')
 			  {
-				  //printf("F\n\r");
+				  initialColorFace = WhichColorWasHere('F');
+				  if(initialColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+				  nowColorFace = cube.WhereIsColor(initialColorFace);
+				  if(nowColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+
 				  if (rx_buf[i+1] == '2')
 				  {
 					  printf("F2\r\n");
-					  ActF2();
+					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
 					  printf("F'\r\n");
-					  ActFp();
+					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
 					  printf("F\r\n");
-					  ActF();
+					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
@@ -283,23 +355,33 @@ unsigned char solve()
 			  }
 			  else if(rx_buf[i]=='B')
 			  {
-				  //printf("B\n\r");
+				  initialColorFace = WhichColorWasHere('B');
+				  if(initialColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+				  nowColorFace = cube.WhereIsColor(initialColorFace);
+				  if(nowColorFace==-1){
+					  printf("Error\n\r");
+					  return 1;
+				  }
+
 				  if (rx_buf[i+1] == '2')
 				  {
 					  printf("B2\r\n");
-					  ActB2();
+					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
 					  printf("B'\r\n");
-					  ActBp();
+					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
 					  printf("B\r\n");
-					  ActB();
+					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
@@ -312,7 +394,6 @@ unsigned char solve()
 	  }
 	  else if(rx_buf[0] == 0)
 	  {
-			//printf("Rentrer une sequence de resolution :\n\r");
 			return 1;
 	  }
 	  else
@@ -510,6 +591,143 @@ void RightAWSide()
 	HAL_Delay(DELAY);
 }
 
+int WhichColorWasHere(int face){
+	switch (face)
+	      {
+	         case 'R':
+	        	 return RInitialColor;
+	         case 'L':
+	        	 return LInitialColor;
+	         case 'U':
+	        	 return UInitialColor;
+	         case 'D':
+	        	 return DInitialColor;
+	         case 'F':
+	        	 return FInitialColor;
+	         case 'B':
+	        	 return BInitialColor;
+	         default:
+	            return -1;
+	      }
+}
+
+void Act(int face, int type){
+	if(face=='R')
+	{
+	  if (type == '2')		//cas R2
+	  {
+		  ActR2();
+	  }
+	  else if (type == 39)
+	  {
+		  ActRp();
+	  }
+	  else if (type == 32)
+	  {
+		  ActR();
+	  }
+	  else
+	  {
+		  printf("error\r\n");
+	  }
+	}
+	else if(face=='L')
+	{
+	  if (type == '2')
+	  {
+		  ActL2();
+	  }
+	  else if (type == 39)
+	  {
+		  ActLp();
+	  }
+		  else if (type == 32)
+	  {
+		  ActL();
+	  }
+	  else
+	  {
+		  printf("error\r\n");
+	  }
+	}
+	else if(face=='U')
+	{
+	  if (type == '2')
+	  {
+		  ActU2();
+	  }
+		  else if (type == 39)
+	  {
+		  ActUp();
+	  }
+	  else if (type == 32)
+	  {
+		  ActU();
+	  }
+	  else
+	  {
+		  printf("error\r\n");
+	  }
+	}
+	else if(face=='D')
+	{
+	  if (type == '2')
+	  {
+		  ActD2();
+	  }
+	  else if (type == 39)
+	  {
+		  ActDp();
+	  }
+	  else if (type == 32)
+	  {
+		  ActD();
+	  }
+	  else
+	  {
+		  printf("error\r\n");
+	  }
+	}
+	else if(face=='F')
+	{
+	  if (type == '2')
+	  {
+		  ActF2();
+	  }
+	  else if (type == 39)
+	  {
+		  ActFp();
+	  }
+	  else if (type == 32)
+	  {
+		  ActF();
+	  }
+	  else
+	  {
+		  printf("error\r\n");
+	  }
+	}
+	else if(face=='B')
+	{
+	  if (type == '2')
+	  {
+		  ActB2();
+	  }
+	  else if (type == 39)
+	  {
+		  ActBp();
+	  }
+	  else if (type == 32)
+	  {
+		  ActB();
+	  }
+	  else
+	  {
+		  printf("error\r\n");
+	  }
+	}
+}
+
 void ActR2()
 {
 	RightCWBody();
@@ -518,9 +736,8 @@ void ActR2()
 	replace();
 	LeftAWSide();
 	replace();
-	RightAWBody();
-	replace();
 	cube.MoveR2();
+	cube.BringToTop_Front(0,2);
 }
 
 void ActRp()
@@ -529,9 +746,8 @@ void ActRp()
 	replace();
 	LeftAWSide();
 	replace();
-	RightAWBody();
-	replace();
 	cube.MoveRprime();
+	cube.BringToTop_Front(0,2);
 }
 
 void ActR()
@@ -540,9 +756,8 @@ void ActR()
 	replace();
 	LeftCWSide();
 	replace();
-	RightAWBody();
-	replace();
 	cube.MoveR();
+	cube.BringToTop_Front(0,2);
 }
 
 void ActL2()
@@ -553,9 +768,8 @@ void ActL2()
 	replace();
 	LeftAWSide();
 	replace();
-	RightCWBody();
-	replace();
 	cube.MoveL2();
+	cube.BringToTop_Front(0,4);
 }
 
 void ActLp()
@@ -564,9 +778,8 @@ void ActLp()
 	replace();
 	LeftAWSide();
 	replace();
-	RightCWBody();
-	replace();
 	cube.MoveLprime();
+	cube.BringToTop_Front(0,4);
 }
 
 void ActL()
@@ -575,9 +788,8 @@ void ActL()
 	replace();
 	LeftCWSide();
 	replace();
-	RightCWBody();
-	replace();
 	cube.MoveL();
+	cube.BringToTop_Front(0,4);
 }
 
 void ActU2()
@@ -590,11 +802,9 @@ void ActU2()
 	replace();
 	RightCWSide();
 	replace();
-	LeftCWBody();
-	replace();
-	LeftCWBody();
-	replace();
+
 	cube.MoveU2();
+	cube.BringToTop_Front(5,1);
 }
 
 void ActUp()
@@ -605,11 +815,8 @@ void ActUp()
 	replace();
 	RightAWSide();
 	replace();
-	LeftCWBody();
-	replace();
-	LeftCWBody();
-	replace();
 	cube.MoveUprime();
+	cube.BringToTop_Front(5,1);
 }
 
 void ActU()
@@ -620,11 +827,8 @@ void ActU()
 	replace();
 	RightCWSide();
 	replace();
-	LeftCWBody();
-	replace();
-	LeftCWBody();
-	replace();
 	cube.MoveU();
+	cube.BringToTop_Front(5,1);
 }
 
 void ActD2()
@@ -660,11 +864,8 @@ void ActF2()
 	replace();
 	LeftCWSide();
 	replace();
-	RightCWBody();
-	replace();
-	RightCWBody();
-	replace();
 	cube.MoveF2();
+	cube.BringToTop_Front(0,3);
 }
 
 void ActFp()
@@ -675,11 +876,8 @@ void ActFp()
 	replace();
 	LeftAWSide();
 	replace();
-	RightCWBody();
-	replace();
-	RightCWBody();
-	replace();
 	cube.MoveFprime();
+	cube.BringToTop_Front(0,3);
 }
 
 void ActF()
@@ -690,11 +888,8 @@ void ActF()
 	replace();
 	LeftCWSide();
 	replace();
-	RightCWBody();
-	replace();
-	RightCWBody();
-	replace();
 	cube.MoveF();
+	cube.BringToTop_Front(0,3);
 }
 
 void ActB2()
@@ -753,7 +948,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  cube.affichage();
 
   HAL_TIM_PWM_Init(&htim3);
   printf("Power ON\r\n");
@@ -768,6 +962,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   int sol=1;
+  cube.affichage();
   while (sol!=0)
   {
     /* USER CODE END WHILE */
