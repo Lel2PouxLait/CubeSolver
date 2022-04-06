@@ -111,22 +111,6 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 RubiksCube cube;
-
-int initialWhiteFace = 'U';	/*Signifie que la face initiale du blanc est la face 0, soit la face Up*/
-int initialRedFace = 'F';		/*[...] rouge [...] 1, soit la face Front*/
-int initialBlueFace = 'R';	/*[...] bleue [...] 4, soit la face Right*/
-int initialGreenFace = 'L';	/*[...] green [...] 2, soit la face Left*/
-int initialOrangeFace = 'B';	/*[...] orange [...] 3, soit la face Back*/
-int initialYellowFace = 'D';	/*[...] jaune [...] 5, soit la face Down*/
-
-int initialUpColor = 0;	/*Signifie que la face initiale du blanc est la face 0, soit la face Up*/
-int initialFrontColor = 1;		/*[...] rouge [...] 1, soit la face Front*/
-int initialRightColor = 4;	/*[...] bleue [...] 4, soit la face Right*/
-int initialLeftColor = 2;	/*[...] green [...] 2, soit la face Left*/
-int initialBackColor = 3;	/*[...] orange [...] 3, soit la face Back*/
-int initialDownColor = 5;	/*[...] jaune [...] 5, soit la face Down*/
-
-
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -453,11 +437,21 @@ void initServosPosition(){
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_FREE);
 	  HAL_Delay(DELAY);
 	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_FREE);
-	  HAL_Delay(5000);
+	  printf("--------------------------------------------------------------------------\r\n");
+	  printf("Code couleur face HAUT : %d             \n\r",UInitialColor);
+	  printf("Code couleur face FRONT : %d            \n\r",FInitialColor);
+	  printf("\n\r");
+	  printf("RAPPEL : \n\r");
+	  printf("Code Couleur : Blanc=%d | Rouge=%d | Vert=%d | Orange=%d | Bleu=%d | Jaune=%d\r\n",WHITE,RED,GREEN,ORANGE,BLUE,YELLOW);
+	  printf("--------------------------------------------------------------------------\r\n");
+	  printf("\n\r");
+	  printf("Inserer le cube et appuyer sur le boutton...\r\n");
+	  while(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)==GPIO_PIN_SET);
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_CLOSE);
-	  HAL_Delay(DELAY);
   	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_CLOSE);
 	  HAL_Delay(DELAY);
+	  printf("Cube Insere\r\n");
+	  printf("\n\r");
 }
 
 
@@ -733,7 +727,7 @@ void ActR2()
 	RightCWBody();
 	replace();
 	LeftAWSide();
-	replace();
+	//replace();
 	LeftAWSide();
 	replace();
 	cube.MoveR2();
@@ -765,7 +759,7 @@ void ActL2()
 	RightAWBody();
 	replace();
 	LeftAWSide();
-	replace();
+	//replace();
 	LeftAWSide();
 	replace();
 	cube.MoveL2();
@@ -795,14 +789,13 @@ void ActL()
 void ActU2()
 {
 	LeftCWBody();
-	replace();
+	//replace();
 	LeftCWBody();
 	replace();
 	RightCWSide();
-	replace();
+	//replace();
 	RightCWSide();
 	replace();
-
 	cube.MoveU2();
 	cube.BringToTop_Front(5,1);
 }
@@ -810,7 +803,7 @@ void ActU2()
 void ActUp()
 {
 	LeftCWBody();
-	replace();
+	//replace();
 	LeftCWBody();
 	replace();
 	RightAWSide();
@@ -822,7 +815,7 @@ void ActUp()
 void ActU()
 {
 	LeftCWBody();
-	replace();
+	//replace();
 	LeftCWBody();
 	replace();
 	RightCWSide();
@@ -834,7 +827,7 @@ void ActU()
 void ActD2()
 {
 	RightCWSide();
-	replace();
+	//replace();
 	RightCWSide();
 	replace();
 	cube.MoveD2();
@@ -857,11 +850,11 @@ void ActD()
 void ActF2()
 {
 	RightCWBody();
-	replace();
+	//replace();
 	RightCWBody();
 	replace();
 	LeftCWSide();
-	replace();
+	//replace();
 	LeftCWSide();
 	replace();
 	cube.MoveF2();
@@ -871,7 +864,7 @@ void ActF2()
 void ActFp()
 {
 	RightCWBody();
-	replace();
+	//replace();
 	RightCWBody();
 	replace();
 	LeftAWSide();
@@ -883,7 +876,7 @@ void ActFp()
 void ActF()
 {
 	RightCWBody();
-	replace();
+	//replace();
 	RightCWBody();
 	replace();
 	LeftCWSide();
@@ -895,7 +888,7 @@ void ActF()
 void ActB2()
 {
 	LeftCWSide();
-	replace();
+	//replace();
 	LeftCWSide();
 	replace();
 	cube.MoveB2();
@@ -950,19 +943,20 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_PWM_Init(&htim3);
-  printf("Power ON\r\n");
-
+  printf("Power ON...\r\n");
+  HAL_Delay(1000);
   for(int i=0; i<128; i++)
   {
   		  rx_buf[i] = 0;
   }
+  printf("Initialisation des servos...\r\n");
+  printf("\r\n");
   initServosPosition();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   int sol=1;
-  cube.affichage();
   while (sol!=0)
   {
     /* USER CODE END WHILE */
@@ -972,7 +966,6 @@ int main(void)
 	  if(sol==0)
 	  {
 		  printf("Fini \n\r");
-		  cube.affichage();
 		  break;
 	  }
 
@@ -1131,6 +1124,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PA5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
