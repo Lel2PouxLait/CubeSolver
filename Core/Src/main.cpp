@@ -44,7 +44,7 @@ using namespace std;
 //Definition des rapports cycliques (en us) pour chaque position de chaque pince.
 #define LEFT_CLAW_OPEN   1900
 #define LEFT_CLAW_CLOSE  1000
-#define LEFT_CLAW_FREE   1300
+#define LEFT_CLAW_FREE   1250
 #define LEFT_CLAW_BIGFREE   1450
 #define RIGHT_CLAW_OPEN  2000
 #define RIGHT_CLAW_CLOSE 1100
@@ -54,9 +54,11 @@ using namespace std;
 //Definition des rapports cycliques (en us) pour chaque position de chaque bras.
 #define LEFT_ARM_0    530
 #define LEFT_ARM_90   1420
+#define LEFT_ARM_90_INIT   1420
 #define LEFT_ARM_180  2305
 #define RIGHT_ARM_0   495
 #define RIGHT_ARM_90  1437
+#define RIGHT_ARM_90_INIT  1437
 #define RIGHT_ARM_180 2435
 
 //Definition du delai entre chaque mouvement
@@ -144,245 +146,253 @@ unsigned char solve()
 {
 	  int i=0;
 	  int initialColorFace,nowColorFace;
+	  int cpt=0;
 
 	  HAL_UART_Receive(&huart2,rx_buf,128,100);
+
 	  if(rx_buf[0]=='G' && rx_buf[1]=='O' && rx_buf[2]==':')
 	  {
-		  printf("===============Debut resolution============\n\r");
+		  for(int i=0; i<128; i++)
+		  {
+				  printf("%c",rx_buf[i]);
+		  }
+		  printf("\n\r");
+		  printf("-----------------------------Debut resolution-----------------------------\n\r");
 		  i=3;
-		  while(rx_buf[i]!=0)
+		  while(rx_buf[i]!=0xff)
 		  {
 			  if(rx_buf[i]=='R')
 			  {
 				  initialColorFace = WhichColorWasHere('R');
 				  if(initialColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur initiale\n\r");
+					  return -1;
 				  }
 				  nowColorFace = cube.WhereIsColor(initialColorFace);
 				  if(nowColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur actuelle\n\r");
+					  return -1;
 				  }
 
 				  if (rx_buf[i+1] == '2')		//cas R2
 				  {
+					  printf("Move %d : R2\r\n",cpt++);
 					  Act(nowColorFace, '2');
-					  printf("R2\r\n");
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
-					  printf("R'\r\n");
+					  printf("Move %d : R'\r\n",cpt++);
 					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
-					  printf("R\r\n");
+					  printf("Move %d : R\r\n",cpt++);
 					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
 				  {
-					  printf("error\r\n");
-					  return 1;
-					  }
+					  printf("Erreur dans la lecture du mouvement a realiser\n\r");
+					  return -1;
+				  }
 			  }
 			  else if(rx_buf[i]=='L')
 			  {
 				  initialColorFace = WhichColorWasHere('L');
 				  if(initialColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur initiale\n\r");
+					  return -1;
 				  }
 				  nowColorFace = cube.WhereIsColor(initialColorFace);
 				  if(nowColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur actuelle\n\r");
+					  return -1;
 				  }
 
 				  if (rx_buf[i+1] == '2')
 				  {
+					  printf("Move %d : L2\r\n",cpt++);
 					  Act(nowColorFace, '2');
-					  printf("L2\r\n");
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
+					  printf("Move %d : L'\r\n",cpt++);
 					  Act(nowColorFace, 39);
-					  printf("L'\r\n");
 					  i+=3;
 				  }
 					  else if (rx_buf[i+1] == 32)
 				  {
+					  printf("Move %d : L\r\n",cpt++);
 					  Act(nowColorFace, 32);
-					  printf("L\r\n");
 					  i+=2;
 				  }
 				  else
 				  {
-					  printf("error\r\n");
-					  return 1;
+					  printf("Erreur dans la lecture du mouvement a realiser\n\r");
+					  return -1;
 				  }
 			  }
 			  else if(rx_buf[i]=='U')
 			  {
 				  initialColorFace = WhichColorWasHere('U');
 				  if(initialColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur initiale\n\r");
+					  return -1;
 				  }
 				  nowColorFace = cube.WhereIsColor(initialColorFace);
 				  if(nowColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur actuelle\n\r");
+					  return -1;
 				  }
 
 				  if (rx_buf[i+1] == '2')
 				  {
-					  printf("U2\r\n");
+					  printf("Move %d : U2\r\n",cpt++);
 					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 					  else if (rx_buf[i+1] == 39)
 				  {
-					  printf("U'\r\n");
+					  printf("Move %d : U'\r\n",cpt++);
 					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
-					  printf("U\r\n");
+					  printf("Move %d : U\r\n",cpt++);
 					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
 				  {
-					  printf("error\r\n");
-					  return 1 ;
+					  printf("Erreur dans la lecture du mouvement a realiser\n\r");
+					  return -1 ;
 				  }
 			  }
 			  else if(rx_buf[i]=='D')
 			  {
 				  initialColorFace = WhichColorWasHere('D');
 				  if(initialColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur initiale\n\r");
+					  return -1;
 				  }
 				  nowColorFace = cube.WhereIsColor(initialColorFace);
 				  if(nowColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur actuelle\n\r");
+					  return -1;
 				  }
 
 				  if (rx_buf[i+1] == '2')
 				  {
-					  printf("D2\r\n");
+					  printf("Move %d : D2\r\n",cpt++);
 					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
-					  printf("D'\r\n");
+					  printf("Move %d : D'\r\n",cpt++);
 					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
-					  printf("D\r\n");
+					  printf("Move %d : D\r\n",cpt++);
 					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
 				  {
-					  printf("error\r\n");
-					  return 1;
+					  printf("Erreur dans la lecture du mouvement a realiser\n\r");
+					  return -1;
 				  }
 			  }
 			  else if(rx_buf[i]=='F')
 			  {
 				  initialColorFace = WhichColorWasHere('F');
 				  if(initialColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur initiale\n\r");
+					  return -1;
 				  }
 				  nowColorFace = cube.WhereIsColor(initialColorFace);
 				  if(nowColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur actuelle\n\r");
+					  return -1;
 				  }
 
 				  if (rx_buf[i+1] == '2')
 				  {
-					  printf("F2\r\n");
+					  printf("Move %d : F2\r\n",cpt++);
 					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
-					  printf("F'\r\n");
+					  printf("Move %d : F'\r\n",cpt++);
 					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
-					  printf("F\r\n");
+					  printf("Move %d : F\r\n",cpt++);
 					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
 				  {
-					  printf("error\r\n");
-					  return 1;
+					  printf("Erreur dans la lecture du mouvement a realiser\n\r");
+					  return -1;
 				  }
 			  }
 			  else if(rx_buf[i]=='B')
 			  {
 				  initialColorFace = WhichColorWasHere('B');
 				  if(initialColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur initiale\n\r");
+					  return -1;
 				  }
 				  nowColorFace = cube.WhereIsColor(initialColorFace);
 				  if(nowColorFace==-1){
-					  printf("Error\n\r");
-					  return 1;
+					  printf("Erreur dans la lecture de la couleur actuelle\n\r");
+					  return -1;
 				  }
 
 				  if (rx_buf[i+1] == '2')
 				  {
-					  printf("B2\r\n");
+					  printf("Move %d : B2\r\n",cpt++);
 					  Act(nowColorFace, '2');
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 39)
 				  {
-					  printf("B'\r\n");
+					  printf("Move %d : B'\r\n",cpt++);
 					  Act(nowColorFace, 39);
 					  i+=3;
 				  }
 				  else if (rx_buf[i+1] == 32)
 				  {
-					  printf("B\r\n");
+					  printf("Move %d : B\r\n",cpt++);
 					  Act(nowColorFace, 32);
 					  i+=2;
 				  }
 				  else
 				  {
-					  printf("error\r\n");
-					  return 1;
+					  printf("Erreur dans la lecture du mouvement a realiser\n\r");
+					  return -1;
 				  }
 			  }
 		  }
 	  }
-	  else if(rx_buf[0] == 0)
+	  else if(rx_buf[0] == 0xff)
 	  {
 			return 1;
 	  }
 	  else
 	  {
-		  printf("Incorrect Input\r\n");
+		  printf("Erreur indeterminee\r\n");
+		  return -1;
 	  }
 	  return 0;
 }
@@ -430,9 +440,13 @@ void initServosPosition(){
 	  HAL_Delay(DELAY);
 	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_OPEN);
 	  HAL_Delay(DELAY);
-	  setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_90);
+	  setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_0);
 	  HAL_Delay(DELAY);
-	  setPWM(htim3, RIGHT_ARM, 20000, RIGHT_ARM_90);
+	  setPWM(htim3, LEFT_ARM, 20000, LEFT_ARM_90_INIT);
+	  HAL_Delay(DELAY);
+	  setPWM(htim3, RIGHT_ARM, 20000, RIGHT_ARM_0);
+	  HAL_Delay(DELAY);
+	  setPWM(htim3, RIGHT_ARM, 20000, RIGHT_ARM_90_INIT);
 	  HAL_Delay(DELAY);
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_FREE);
 	  HAL_Delay(DELAY);
@@ -448,6 +462,7 @@ void initServosPosition(){
 	  printf("Inserer le cube et appuyer sur le boutton...\r\n");
 	  while(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)==GPIO_PIN_SET);
 	  setPWM(htim3, LEFT_CLAW, 20000, LEFT_CLAW_CLOSE);
+	  HAL_Delay(DELAY);
   	  setPWM(htim3, RIGHT_CLAW, 20000, RIGHT_CLAW_CLOSE);
 	  HAL_Delay(DELAY);
 	  printf("Cube Insere\r\n");
@@ -727,7 +742,7 @@ void ActR2()
 	RightCWBody();
 	replace();
 	LeftAWSide();
-	//replace();
+	replace();
 	LeftAWSide();
 	replace();
 	cube.MoveR2();
@@ -736,12 +751,12 @@ void ActR2()
 
 void ActRp()
 {
-	RightCWBody();
+	RightCWBody();				//Rotation de la pince droite dans le sens CW (clockwise)
 	replace();
-	LeftAWSide();
-	replace();
-	cube.MoveRprime();
-	cube.BringToTop_Front(0,2);
+	LeftAWSide();				//Rotation de la pince gauche dans le sens AW (anticlockwise)
+	replace();					//Replace le rubik's cube au fond des pinces
+	cube.MoveRprime();			//Mise a jour du Cube virtuel avec l'application d'un mouvement R'
+	cube.BringToTop_Front(0,2);	//Mise a jour du Cube virtuel avec l'application d'un mouvement R'
 }
 
 void ActR()
@@ -759,7 +774,7 @@ void ActL2()
 	RightAWBody();
 	replace();
 	LeftAWSide();
-	//replace();
+	replace();
 	LeftAWSide();
 	replace();
 	cube.MoveL2();
@@ -789,11 +804,11 @@ void ActL()
 void ActU2()
 {
 	LeftCWBody();
-	//replace();
+	replace();
 	LeftCWBody();
 	replace();
 	RightCWSide();
-	//replace();
+	replace();
 	RightCWSide();
 	replace();
 	cube.MoveU2();
@@ -803,7 +818,7 @@ void ActU2()
 void ActUp()
 {
 	LeftCWBody();
-	//replace();
+	replace();
 	LeftCWBody();
 	replace();
 	RightAWSide();
@@ -815,7 +830,7 @@ void ActUp()
 void ActU()
 {
 	LeftCWBody();
-	//replace();
+	replace();
 	LeftCWBody();
 	replace();
 	RightCWSide();
@@ -827,7 +842,7 @@ void ActU()
 void ActD2()
 {
 	RightCWSide();
-	//replace();
+	replace();
 	RightCWSide();
 	replace();
 	cube.MoveD2();
@@ -850,11 +865,11 @@ void ActD()
 void ActF2()
 {
 	RightCWBody();
-	//replace();
+	replace();
 	RightCWBody();
 	replace();
 	LeftCWSide();
-	//replace();
+	replace();
 	LeftCWSide();
 	replace();
 	cube.MoveF2();
@@ -864,7 +879,7 @@ void ActF2()
 void ActFp()
 {
 	RightCWBody();
-	//replace();
+	replace();
 	RightCWBody();
 	replace();
 	LeftAWSide();
@@ -876,7 +891,7 @@ void ActFp()
 void ActF()
 {
 	RightCWBody();
-	//replace();
+	replace();
 	RightCWBody();
 	replace();
 	LeftCWSide();
@@ -888,7 +903,7 @@ void ActF()
 void ActB2()
 {
 	LeftCWSide();
-	//replace();
+	replace();
 	LeftCWSide();
 	replace();
 	cube.MoveB2();
@@ -947,7 +962,7 @@ int main(void)
   HAL_Delay(1000);
   for(int i=0; i<128; i++)
   {
-  		  rx_buf[i] = 0;
+  		  rx_buf[i] = 0xff;
   }
   printf("Initialisation des servos...\r\n");
   printf("\r\n");
@@ -956,19 +971,23 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int sol=1;
-  while (sol!=0)
+  int solveCode=1;
+  while (solveCode==1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  int sol = solve();
-	  if(sol==0)
-	  {
-		  printf("Fini \n\r");
-		  break;
+	  solveCode = solve();
+	  switch(solveCode){
+	  	  case 0:
+	  		  printf("Resolution reussie \n\r");
+	  		  break;
+	  	  case -1:
+	  		  printf("Erreur lors de la résolution\n\r");
+	  		  break;
+	  	  default:
+	  		  break;
 	  }
-
   }
   return 0;
   /* USER CODE END 3 */
