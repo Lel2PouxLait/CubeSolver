@@ -29,28 +29,30 @@ class RubiksCube
 {
         public:
 
-                /// constructeur
+                // constructeur
                 RubiksCube();
 
-                /// destructeur
+                // destructeur
                 ~RubiksCube();
 
                 void affichage() const;
 
-                /// Amene la face voulu devant
+                // Amene la face voulu devant
                 void BringToFront(int face);
 
-                /// bring face to top
+                // Amene la face face au top (elle devient donc la nouvelle face Up=haut)
                 void BringToTop(int face);
 
-                /// bring top to Top and face to Face
+                // Amene la face face au top (elle devient donc la nouvelle face Up=haut) et la face front au front (elle devient donc la nouvelle face Front=devant)
                 void BringToTop_Front(int top,int front);
 
+                // Simule les rotations qu'effectue le robot sur le cube virtuel
                 void RotCubePinceDroiteAntiHoraire();
                 void RotCubePinceDroiteHoraire();
                 void RotCubePinceGaucheAntiHoraire();
                 void RotCubePinceGaucheHoraire();
 
+                // Simule l'ensemble des mouvements de base du robot
                 void MoveR();
                 void MoveR2();
                 void MoveRprime();
@@ -75,22 +77,24 @@ class RubiksCube
                 void MoveB2();
                 void MoveBprime();
 
+                // Retourne le numéro de la face de la couleur demandé
                 int WhereIsColor(int initialColorFace);
 
         protected:
 
-                /// cube data
+                // Donnee du cube
                 int **cube_data;
 
-                /// temporary container for cube data
+                // Stockage temporaire des donnees du cube
                 int **temp_cube_data;
 
+                //Compteur de mouvement
                 int moves;
 
-                /// copy temp_cube_data into cube_data
+                // copy temp_cube_data into cube_data
                 void CopyCube();
 
-                // building blocks for moving pieces
+                // Réecrit les faces en fonction des mouvements effectués
                 void RotateFace(int);
                 void RotateEquatorX();
                 void RotateEquatorY();

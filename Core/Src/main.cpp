@@ -64,6 +64,13 @@ using namespace std;
 //Definition du delai entre chaque mouvement
 #define DELAY 500
 
+//Les fonctions ci-dessous sont définies dans le format suivant :
+//void CotéRobot|Sens|type
+//Le coté left correspond au coté du robot sans scotch, le coté right avec scotch
+//Sens CW=Clockwise et AW=Anticlockwise
+//Type Body=fait tourner le cube Side=fait tourner la face
+//Exemple LeftCWBody fait pivoter le cube de 90° dans le sens CW avec la pince gauche
+//Exemple RightAWBody fait tourner la face avec la pince droite dans le sens AW
 void LeftCWBody();
 void LeftAWBody();
 void LeftCWSide();
@@ -73,13 +80,15 @@ void RightAWBody();
 void RightCWSide();
 void RightAWSide();
 
-
+//Fonction qui fait executer un mouvement type sur une face face
+//Exemple Act(B, ' '); fait faire un mouvement B
 void Act(int face, int type);
-int WhichColorWasHere(int face);
-int WhereIsColor(int initialColorFace);
 
-void ActR2();
-void ActRp();
+//Fonction qui regarde quelle couleur était sur le cube de base sur le numéro de face demandé
+int WhichColorWasHere(int face);
+
+void ActR2();//Fonction qui fait un mouvement R2
+void ActRp();//Fonction qui fait un mouvement R'
 void ActR();
 void ActL2();
 void ActLp();
@@ -600,6 +609,14 @@ void RightAWSide()
 	HAL_Delay(DELAY);
 }
 
+/****************************************************************************/
+/*						FONCTION WhichColorWasHere()				 		*/
+/*	Parametres: 	un numéro de face										*/
+/*																			*/
+/*	Return: 		Le code couleur de la couleur qui était présente		*/
+/*					sur le cube initial sur la face demandée				*/
+/*																			*/
+/****************************************************************************/
 int WhichColorWasHere(int face){
 	switch (face)
 	      {

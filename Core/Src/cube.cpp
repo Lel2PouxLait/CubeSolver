@@ -2,18 +2,18 @@
 
 /*===============================================
      b           3
-   l u r       2 0 4
+   l u r       2 0 4				Correspondance face et numéro de face
      f   d       1    5                                 
 
 
-WHITE 0
+WHITE 0				Correspondances couleurs et numéro de couleurs
 RED 1
 GREEN 2
 ORANGE 3
 BLUE 4
 YELLOW 5
 
-               0|1|2                            
+               0|1|2                       Numéro des petits carrés sur chaque face
                3|4|5                            
                6|7|8                            
                                                 
@@ -118,16 +118,11 @@ void RubiksCube::affichage() const{
 	
 	for(int i=0;i<6;i++){
 		printf("face %d: [",i);
-		//cout<<"face "<<i<<": "<<endl<<"[";
 		for(int j=0;j<9;j++){
 			printf("%d ",cube_data[i][j]);
-			//cout<<cube_data[i][j]<<"  ";
 		}
 		printf("]\n\r \n\r");
-		//cout<<"]"<<endl<<endl;
 	}
-        //cout << endl << "----------------------------"<<endl<<endl;
-	
 }
 
 void RubiksCube::CopyCube(){
